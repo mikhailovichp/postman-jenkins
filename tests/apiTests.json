@@ -1,0 +1,638 @@
+{
+	"info": {
+		"_postman_id": "f1107f92-5e5d-47cc-964a-28d2ff7b0755",
+		"name": "API course - Collection run",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getCityPopulationByName",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var city = \"Lviv\";",
+							"pm.collectionVariables.set(\"myCity\", city);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"var population = jsonData.records[0].fields.population;",
+							"",
+							"pm.collectionVariables.set(\"population\", population);",
+							"",
+							"//Tests",
+							"",
+							"pm.test(\"Status is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authority",
+						"value": "public.opendatasoft.com"
+					},
+					{
+						"key": "cache-control",
+						"value": "max-age=0"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "upgrade-insecure-requests",
+						"value": "1"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36"
+					},
+					{
+						"key": "accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-origin"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "navigate"
+					},
+					{
+						"key": "sec-fetch-user",
+						"value": "?1"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "document"
+					},
+					{
+						"key": "referer",
+						"value": "https://public.opendatasoft.com/explore/dataset/geonames-all-cities-with-a-population-1000/api/?disjunctive.cou_name_en&sort=name&q=Dnipro"
+					},
+					{
+						"key": "accept-language",
+						"value": "en,ru;q=0.9,es;q=0.8,en-US;q=0.7,uk;q=0.6"
+					},
+					{
+						"key": "cookie",
+						"value": "csrftoken=274OMe5k4A3ZQMFfhVvZ1lBUhIh5B5968qkIbn7fSwIYKKS7TeWQBo4n5qRIBpPy"
+					}
+				],
+				"url": {
+					"raw": "https://public.opendatasoft.com/api/records/1.0/search/?dataset=geonames-all-cities-with-a-population-1000&q={{myCity}}",
+					"protocol": "https",
+					"host": [
+						"public",
+						"opendatasoft",
+						"com"
+					],
+					"path": [
+						"api",
+						"records",
+						"1.0",
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "dataset",
+							"value": "geonames-all-cities-with-a-population-1000"
+						},
+						{
+							"key": "sort",
+							"value": "name",
+							"disabled": true
+						},
+						{
+							"key": "facet",
+							"value": "feature_code",
+							"disabled": true
+						},
+						{
+							"key": "facet",
+							"value": "cou_name_en",
+							"disabled": true
+						},
+						{
+							"key": "facet",
+							"value": "timezone",
+							"disabled": true
+						},
+						{
+							"key": "q",
+							"value": "{{myCity}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addCity",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var myPersonalCity = pm.collectionVariables.get(\"myCity\") + \" by Peter\";",
+							"",
+							"pm.collectionVariables.set(\"myPersonalCity\", myPersonalCity);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"var cityID = jsonData.inserted[\"_id\"];",
+							"pm.collectionVariables.set(\"cityID\", cityID);",
+							"",
+							"//Tests",
+							"pm.test(\"Status is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"city\" : \"{{myPersonalCity}}\",\n\t\"population\" : {{population}}\n}"
+				},
+				"url": {
+					"raw": "{{baseURLdummy}}newCity",
+					"host": [
+						"{{baseURLdummy}}newCity"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkCItyExists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var myPersonalCity = pm.collectionVariables.get(\"myPersonalCity\");",
+							"",
+							"pm.test(\"The city with the name \" +myPersonalCity+ \" exists in the database\", function () {",
+							"    pm.expect(pm.response.text()).to.include(myPersonalCity);",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authority",
+						"value": "mikhailovichp.editorx.io"
+					},
+					{
+						"key": "cache-control",
+						"value": "max-age=0"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "upgrade-insecure-requests",
+						"value": "1"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36"
+					},
+					{
+						"key": "accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "none"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "navigate"
+					},
+					{
+						"key": "sec-fetch-user",
+						"value": "?1"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "document"
+					},
+					{
+						"key": "accept-language",
+						"value": "en,ru;q=0.9,es;q=0.8,en-US;q=0.7,uk;q=0.6"
+					},
+					{
+						"key": "cookie",
+						"value": "svSession=bb6d0c08e3f51d95450fd706fa0cd542d832d2c8a1ad2da34d35113f82fe67d23ea2f8c8cd086dbea34750bda65a13d11e60994d53964e647acf431e4f798bcd1590c48b9ff5212bd8af7c07ab20f23e3d5f9823fcf4c1c11b57d0bf0548ce53fc962f61102214713080099b27df273a0fb115e4dfe300bc780a45536e8c39162e68847cded31330c46116423a7bdc0b; petri_ovr=specs.responsive-editor.RegisterDSError#true|specs.responsive-editor.Interactions#true|dm_wixCodeOpenGridApp#new|specs.FetchWixCodeOpenCodeAppId#true|specs.SaveOpenWixCodeAppIdOnFirstSave#true|specs.wixData.ConcurrentEditingSupport#true|specs.clouddata.EnableOptimisticLocking#false|specs.WixCodeOpenCodeAppIdEnabled#true; hs=382704365; XSRF-TOKEN=1623915541|sJg-wRNHgJvp; bSession=809c8c06-fcb2-4448-831a-e0f0f048f75b|1"
+					}
+				],
+				"url": {
+					"raw": "https://mikhailovichp.editorx.io/mysite-46/_functions/getCities",
+					"protocol": "https",
+					"host": [
+						"mikhailovichp",
+						"editorx",
+						"io"
+					],
+					"path": [
+						"mysite-46",
+						"_functions",
+						"getCities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateCity",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"_id\" : \"{{cityID}}\",\n\t\"city\" : \"{{myPersonalCity2}}\",\n    \"population\": {{population}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://mikhailovichp.editorx.io/mysite-46/_functions/updateCity",
+					"protocol": "https",
+					"host": [
+						"mikhailovichp",
+						"editorx",
+						"io"
+					],
+					"path": [
+						"mysite-46",
+						"_functions",
+						"updateCity"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkCItyNameWasChanged",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var myPersonalCity = pm.collectionVariables.get(\"myPersonalCity\");",
+							"var myPersonalCity2 = pm.collectionVariables.get(\"myPersonalCity2\");",
+							"",
+							"pm.test(\"The city with the name \" +myPersonalCity2+ \" exists in the database\", function () {",
+							"    pm.expect(pm.response.text()).to.include(myPersonalCity2);",
+							"});",
+							"",
+							"pm.test(\"The city with the name \" +myPersonalCity+ \" no longer exists in the database\", function () {",
+							"    pm.expect(pm.response.text()).to.not.include(myPersonalCity);",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authority",
+						"value": "mikhailovichp.editorx.io"
+					},
+					{
+						"key": "cache-control",
+						"value": "max-age=0"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "upgrade-insecure-requests",
+						"value": "1"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36"
+					},
+					{
+						"key": "accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "none"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "navigate"
+					},
+					{
+						"key": "sec-fetch-user",
+						"value": "?1"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "document"
+					},
+					{
+						"key": "accept-language",
+						"value": "en,ru;q=0.9,es;q=0.8,en-US;q=0.7,uk;q=0.6"
+					},
+					{
+						"key": "cookie",
+						"value": "svSession=bb6d0c08e3f51d95450fd706fa0cd542d832d2c8a1ad2da34d35113f82fe67d23ea2f8c8cd086dbea34750bda65a13d11e60994d53964e647acf431e4f798bcd1590c48b9ff5212bd8af7c07ab20f23e3d5f9823fcf4c1c11b57d0bf0548ce53fc962f61102214713080099b27df273a0fb115e4dfe300bc780a45536e8c39162e68847cded31330c46116423a7bdc0b; petri_ovr=specs.responsive-editor.RegisterDSError#true|specs.responsive-editor.Interactions#true|dm_wixCodeOpenGridApp#new|specs.FetchWixCodeOpenCodeAppId#true|specs.SaveOpenWixCodeAppIdOnFirstSave#true|specs.wixData.ConcurrentEditingSupport#true|specs.clouddata.EnableOptimisticLocking#false|specs.WixCodeOpenCodeAppIdEnabled#true; hs=382704365; XSRF-TOKEN=1623915541|sJg-wRNHgJvp; bSession=809c8c06-fcb2-4448-831a-e0f0f048f75b|1"
+					}
+				],
+				"url": {
+					"raw": "https://mikhailovichp.editorx.io/mysite-46/_functions/getCities",
+					"protocol": "https",
+					"host": [
+						"mikhailovichp",
+						"editorx",
+						"io"
+					],
+					"path": [
+						"mysite-46",
+						"_functions",
+						"getCities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "removeCity",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://mikhailovichp.editorx.io/mysite-46/_functions/removeCity/{{cityID}}",
+					"protocol": "https",
+					"host": [
+						"mikhailovichp",
+						"editorx",
+						"io"
+					],
+					"path": [
+						"mysite-46",
+						"_functions",
+						"removeCity",
+						"{{cityID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkCityWasRemoved",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var myPersonalCity2 = pm.collectionVariables.get(\"myPersonalCity2\");",
+							"",
+							"pm.test(\"The city with the name \" +myPersonalCity2+ \" no longer exists in the database\", function () {",
+							"    pm.expect(pm.response.text()).to.not.include(myPersonalCity2);",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authority",
+						"value": "mikhailovichp.editorx.io"
+					},
+					{
+						"key": "cache-control",
+						"value": "max-age=0"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "upgrade-insecure-requests",
+						"value": "1"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36"
+					},
+					{
+						"key": "accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "none"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "navigate"
+					},
+					{
+						"key": "sec-fetch-user",
+						"value": "?1"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "document"
+					},
+					{
+						"key": "accept-language",
+						"value": "en,ru;q=0.9,es;q=0.8,en-US;q=0.7,uk;q=0.6"
+					},
+					{
+						"key": "cookie",
+						"value": "svSession=bb6d0c08e3f51d95450fd706fa0cd542d832d2c8a1ad2da34d35113f82fe67d23ea2f8c8cd086dbea34750bda65a13d11e60994d53964e647acf431e4f798bcd1590c48b9ff5212bd8af7c07ab20f23e3d5f9823fcf4c1c11b57d0bf0548ce53fc962f61102214713080099b27df273a0fb115e4dfe300bc780a45536e8c39162e68847cded31330c46116423a7bdc0b; petri_ovr=specs.responsive-editor.RegisterDSError#true|specs.responsive-editor.Interactions#true|dm_wixCodeOpenGridApp#new|specs.FetchWixCodeOpenCodeAppId#true|specs.SaveOpenWixCodeAppIdOnFirstSave#true|specs.wixData.ConcurrentEditingSupport#true|specs.clouddata.EnableOptimisticLocking#false|specs.WixCodeOpenCodeAppIdEnabled#true; hs=382704365; XSRF-TOKEN=1623915541|sJg-wRNHgJvp; bSession=809c8c06-fcb2-4448-831a-e0f0f048f75b|1"
+					}
+				],
+				"url": {
+					"raw": "https://mikhailovichp.editorx.io/mysite-46/_functions/getCities",
+					"protocol": "https",
+					"host": [
+						"mikhailovichp",
+						"editorx",
+						"io"
+					],
+					"path": [
+						"mysite-46",
+						"_functions",
+						"getCities"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PostmanCollectionName",
+			"value": "WixPostmanCourse"
+		},
+		{
+			"key": "baseURLdummy",
+			"value": "https://mikhailovichp.editorx.io/mysite-46/_functions/"
+		},
+		{
+			"key": "myCity",
+			"value": ""
+		},
+		{
+			"key": "population",
+			"value": ""
+		},
+		{
+			"key": "myPersonalCity",
+			"value": ""
+		},
+		{
+			"key": "myPersonalCity2",
+			"value": "newCity"
+		},
+		{
+			"key": "cityID",
+			"value": ""
+		}
+	]
+}

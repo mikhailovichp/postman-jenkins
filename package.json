@@ -1,0 +1,15 @@
+{
+  "name": "postmanjenkins",
+  "version": "1.0.0",
+  "description": "Project for storing Postman tests",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "api-test": "newman run tests/apiTests.json"
+  },
+  "author": "PeterT",
+  "dependencies": {
+    "newman": "^5.2.4"
+  }
+}
